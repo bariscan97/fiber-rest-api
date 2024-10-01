@@ -11,8 +11,8 @@ type (
 	IUserService interface {
 		CreateUser(data *models.RegisterUserModel) (*models.FetchUserModel, error)
 		GetUserByEmail(email string) (*models.FetchUserModel, error)
-		UpdateUsername(id uuid.UUID, username string) error
-		DeleteMe(id uuid.UUID) error
+		UpdateUsername(id uuid.UUID, username string) (bool, error)
+		DeleteMe(id uuid.UUID) (bool, error)
 	}
 	UserService struct {
 		userRepo userRepo.IUserRepo
@@ -33,10 +33,10 @@ func (userService *UserService) GetUserByEmail(email string) (*models.FetchUserM
 	return userService.userRepo.GetUserByEmail(email)
 }
 
-func (userService *UserService) UpdateUsername(id uuid.UUID, username string) error {
+func (userService *UserService) UpdateUsername(id uuid.UUID, username string) (bool, error) {
 	return userService.userRepo.UpdateUsername(id, username)
 }
 
-func (userService *UserService) DeleteMe(id uuid.UUID) error {
+func (userService *UserService) DeleteMe(id uuid.UUID) (bool, error) {
 	return userService.userRepo.DeleteMe(id)
 }

@@ -86,7 +86,7 @@ func (todoController *TodoController) UpdateTodo(c *fiber.Ctx) error {
 		message = "unsuccessful"	
 	}
 	
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+	return c.Status(200).JSON(fiber.Map{
 		"message": message,
 	})
 }
@@ -117,7 +117,7 @@ func (todoController *TodoController) DeleteTodo(c *fiber.Ctx) error {
 		message = "unsuccessful"	
 	}
 	
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+	return c.Status(200).JSON(fiber.Map{
 		"message": message,
 	})
 }

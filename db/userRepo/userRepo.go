@@ -2,13 +2,10 @@ package userRepo
 
 import (
 	"context"
-	
 	"fmt"
 	"todo_api/models"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/labstack/gommon/log"
 )
 
 type (
@@ -17,8 +14,8 @@ type (
 	}
 	IUserRepo interface {
 		CreateUser(data *models.RegisterUserModel) (*models.FetchUserModel, error)
-		UpdateUsername(id uuid.UUID, username string) error
-		DeleteMe(id uuid.UUID) error
+		UpdateUsername(id uuid.UUID, username string) (bool, error)
+		DeleteMe(id uuid.UUID) (bool, error)
 		GetUserByEmail(email string) (*models.FetchUserModel, error)
 	}
 )
@@ -64,7 +61,7 @@ func (userRepo *UserRepository) GetUserByEmail(email string) (*models.FetchUserM
 	return user, nil
 }
 
-func (userRepo *UserRepository) UpdateUsername(id uuid.UUID, username string) error {
+func (userRepo *UserRepository) UpdateUsername(id uuid.UUID, username string) (bool, error) {
 
 	ctx := context.Background()
 	
@@ -74,29 +71,27 @@ func (userRepo *UserRepository) UpdateUsername(id uuid.UUID, username string) er
 			username = $2
 		WHERE id = $1
 	`
-	_, err := userRepo.pool.Exec(ctx, sql, id, username)
+	result, err := userRepo.pool.Exec(ctx, sql, id, username)
 
 	if err != nil {
-		return fmt.Errorf(err.Error())
+		return false ,fmt.Errorf(err.Error())
 	}
 
-	return nil
+	return result.RowsAffected() == 1, nil 
 }
 
-func (userRepo *UserRepository) DeleteMe(id uuid.UUID) error {
+func (userRepo *UserRepository) DeleteMe(id uuid.UUID) (bool, error) {
 	ctx := context.Background()
 
 	sql := `
 		DELETE FROM users
 		WHERE id = $1
 	`
-	commandTag, err := userRepo.pool.Exec(ctx, sql, id)
+	result, err := userRepo.pool.Exec(ctx, sql, id)
 
 	if err != nil {
-		return fmt.Errorf(err.Error())
+		return false ,fmt.Errorf(err.Error())
 	}
 
-	log.Info(fmt.Printf("User created with %v", commandTag))
-
-	return nil
+	return result.RowsAffected() == 1, nil 
 }

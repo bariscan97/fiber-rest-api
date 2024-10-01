@@ -32,14 +32,23 @@ func (controller *UserController) DeleteMe(c *fiber.Ctx) error {
 
 	user := c.Locals("user").(*models.Claim)
 
-	err := controller.UserServices.DeleteMe(user.User.Id)
-	
+	ok, err := controller.UserServices.DeleteMe(user.User.Id)
+		
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+	var message string
+
+	if ok {
+		message = "successful"
+	}else {
+		message = "unsuccessful"	
 	}
 	
 	return c.Status(200).JSON(fiber.Map{
-		"delete": "successful",
+		"message": message,
 	})
 }
 
@@ -53,14 +62,23 @@ func (controller *UserController) UpdateUsername(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "username not valid"})
 	}
 
-	err := controller.UserServices.UpdateUsername(user.User.Id, NewUsername)
+	ok, err := controller.UserServices.UpdateUsername(user.User.Id, NewUsername)
 	
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+	var message string
+
+	if ok {
+		message = "successful"
+	}else {
+		message = "unsuccessful"	
 	}
 	
 	return c.Status(200).JSON(fiber.Map{
-		"delete": "successful",
+		"message": message,
 	})
 }
 

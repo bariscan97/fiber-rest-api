@@ -60,15 +60,7 @@ func (todoRepo *TodoRepository) UpdateTodo(user_id uuid.UUID, todo_id uuid.UUID,
 		return false, fmt.Errorf(err.Error())
 	}
 	
-	var ok bool 
-	
-	if result.RowsAffected() == 1 {
-		ok = true
-	}else {
-		ok = false
-	}
-	
-	return ok, nil 
+	return result.RowsAffected() == 1, nil 
 }
 
 func (todoRepo *TodoRepository) DeleteTodo(user_id uuid.UUID, todo_id uuid.UUID) (bool, error) {
@@ -83,16 +75,8 @@ func (todoRepo *TodoRepository) DeleteTodo(user_id uuid.UUID, todo_id uuid.UUID)
 	if err != nil {
 		return false, fmt.Errorf(err.Error())
 	}
-	
-	var ok bool 
-	
-	if result.RowsAffected() == 1 {
-		ok = true
-	}else {
-		ok = false
-	}
-	
-	return ok, nil 
+		
+	return result.RowsAffected() == 1, nil 
 }
 
 func (todoRepo *TodoRepository) GetTodoById(user_id uuid.UUID, todo_id uuid.UUID) (models.FetchTodoModel, error) {
