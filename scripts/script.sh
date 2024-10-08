@@ -25,7 +25,6 @@ BEGIN
 END
 \$\$;
 "
-echo "Database todoapp created"
 
 winpty docker exec -it ${POSTGRES_CONTAINER} psql -U $DB_USER -d $DB_NAME -c '
 
@@ -44,7 +43,7 @@ CREATE TABLE todos (
     content VARCHAR(255) NOT NULL,
     user_id UUID NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-	  FOREIGN KEY(user_id) REFERENCES users(id)
+	  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 '
 echo "Tables  created"
